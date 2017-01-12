@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
             return EXIT_SUCCESS;
         }
 
-        for(int i = 1; i < argc - 1; ++i) {
+        for(int i = 1; i < argc; ++i) {
             if(!strncmp(argv[i], "-d=", 3)) {
                 dictionaryPath = argv[i] + 3;
             }
