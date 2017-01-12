@@ -1,79 +1,62 @@
+/**
+ * File       : SpellChecker.h
+ * Authors    : Lucas ELISEI, Dany TCHENTE & David TRUAN
+ *
+ * Created on : 12.01.2017
+ *
+ * Contains the SpellChecker class.
+ */
+
 #ifndef __SPELL_CHECKER__
 #define __SPELL_CHECKER__
 
-#include <algorithm>
-#include <cctype>
-#include <chrono>
-#include <fstream>
-#include <iostream>
 #include <string>
-#include <unordered_set>
+#include <vector>
+
+#include "Dictionary.h"
 
 using namespace std;
 
-/**
- * SpellCheckerUnorderedSet signifie qu'une STD de type 'unordered_set' sera utilisée
- * pour stocker le dictionnaire. Si SpellCheckerTBT est choisi, alors ce sera un
- * arbre ternaire de recherche qui sera utilisé.
- */
-enum SpellCheckerType {
-    SpellCheckerUnorderedSet,
-    SpellCheckerTBT
-};
 
+/**
+ * Class which is used to spell check given a text file and a dictionary.
+ */
 class SpellChecker {
 
+#pragma mark - Private fields
+
 private:
-    SpellCheckerType type;
-    unordered_set<string> dictionary;
+    const string& filename;
+    const Dictionary& dictionary;
+
+#pragma mark - Public methods
 
 public:
 
-    SpellChecker(const string& dictionary, SpellCheckerType type) {
-        this->type = type;
+    /**
+     * SpellChecker class constructor.
+     *
+     * - filename : Path to the file to spell check.
+     * - dict     : The dictionary to spell check the file with.
+     */
+    SpellChecker(const string& filename, const Dictionary& dictionary)
+        : filename(filename), dictionary(dictionary) {
 
-        cout << "Loading dictionary from " << dictionary << endl;
+        //TODO: Implement.
 
-        // On ouvre le fichier.
-        ifstream file(dictionary);
-        if(!file) {
-            cerr << "Error loading " << dictionary << ". Exiting." << endl;
-
-            exit(EXIT_FAILURE);
-        }
-
-        // On démarre le timer.
-        chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
-
-        string word;
-        while(getline(file, word)) {
-            // On supprime les retours à la ligne s'il y en a.
-            if(!word.empty() && word.at(word.size() - 1) == '\r')
-                word.erase(word.end() - 1);
-
-            // On passe le mot en minuscules.
-            transform(word.begin(), word.end(), word.begin(), ::tolower);
-
-            switch(type) {
-                case SpellCheckerUnorderedSet:
-                    this->dictionary.insert(word);
-                    break;
-
-                case SpellCheckerTBT:
-                    break;
-
-                default:
-                    cerr << "Error retrieving STD type. Exiting." << endl;
-                    exit(EXIT_FAILURE);
-            }
-        }
-
-        // On arrête le timer.
-        chrono::time_point<chrono::system_clock> end = chrono::system_clock::now();
-
-        chrono::duration<double> duration = end - start;
-        cout << "Dictionary loaded in " << duration.count() << " seconds." << endl;
     }
+
+#pragma mark - Private methods
+
+private:
+
+    /**
+     * Generates all correct variations of the word passed as argument by deleting
+     * a character at any place (i.e. "worrk" --> "work").
+     *
+     * Returns a vector that contains all those possibilities.
+     */
+    vector<string> possibilities1ForWord(const string& word);
 
 };
 
