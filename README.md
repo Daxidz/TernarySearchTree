@@ -5,15 +5,15 @@ Ce projet est réalisé dans le cadre du laboratoire n˚6 du cours d'ASD2 de l'H
 * `main.cpp`:
     * Ajouter la possibilité de fournir un nom de fichier au programme. Comportement par défaut: lis les quatre fichiers spécifiés dans la donnée.
 * `Dictionary.h`:
-    * Implémenter la structure `DictionaryTBT`.
-* `SpellChecker.h`:
-    * Implémenter la classe.
+    * Implémenter pour la structure `DictionaryTST`.
+* Implémenter la classe `SpellChecker`.
+* Implémenter la structure *Trinary Search Trie*.
 
 ## Environnement de développement
 Le projet a été testé sur une machine ayant les spécifications suivantes :
 
-    * macOS Sierra 10.12.2
-    * g++ 4.2.1
+* macOS Sierra 10.12.2
+* g++ 4.2.1
 
 ## Compilation
 Avant toute chose, vérifiez que les variables se trouvant dans le `Makefile` sont adaptées à votre système.

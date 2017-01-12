@@ -26,11 +26,11 @@ using namespace std;
  * Dictionary class.
  *
  * - DictionaryUnorderedSet : std::unordered_set;
- * - DictionaryTBT          : Own implementation of a Ternary Search Trie.
+ * - DictionaryTST          : Own implementation of a Ternary Search Trie.
  */
 enum DictionaryType {
     DictionaryUnorderedSet,
-    DictionaryTBT
+    DictionaryTST
 };
 
 
@@ -64,7 +64,7 @@ public:
                 cout << "Using \"unordered_set\" implementation." << endl;
                 break;
 
-            case DictionaryTBT:
+            case DictionaryTST:
                 cout << "Using \"Ternary Search Trie\" implementation." << endl;
                 break;
         }
@@ -98,7 +98,7 @@ public:
                     break;
 
                 //TODO: Implement.
-                case DictionaryTBT:
+                case DictionaryTST:
                     break;
             }
         }
@@ -119,7 +119,7 @@ public:
             case DictionaryUnorderedSet:
                 return (this->dictionary.find(word) != this->dictionary.end());
 
-            case DictionaryTBT:
+            case DictionaryTST:
                 return false;
 
             default:

@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
             }
             else if(!strncmp(argv[i], "-t=", 3)) {
                 if(!strcmp(argv[i] + 3, "tst")) {
-                    type = DictionaryTBT;
+                    type = DictionaryTST;
                 }
             }
             else {
