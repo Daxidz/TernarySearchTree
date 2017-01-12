@@ -1,6 +1,20 @@
 ## Introduction
 Ce projet est réalisé dans le cadre du laboratoire n˚6 du cours d'ASD2 de l'HEIG-VD.
 
+## Environnement de développement
+Le projet a été testé sur une machine ayant les spécifications suivantes :
+    * macOS Sierra 10.12.2
+    * g++ 4.2.1
+
+## Compilation
+Avant toute chose, vérifiez que les variables dans le `Makefile` soient adaptées à votre système.
+
+Puis dans un terminal :
+
+    cd /path/to/folder
+    make
+
+
 ## Documentation
 La donnée du laboratoire est disponible à [cette adresse](files/donnee.pdf).
 
