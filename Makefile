@@ -9,12 +9,7 @@ RM_FLAGS = -r -f
 
 all: spell_checker
 
-run: clean all
-	@$(PRINTF) "Executing spell_checker...\n\n"
-	@./spell_checker
-
 spell_checker: $(CPP_FILES)
-	@$(PRINTF) "Compiling spell_checker...\n\n"
 	@$(CC) $(CPP_FLAGS) $^ -o $@
 
 clean:
