@@ -18,6 +18,8 @@
 #include <string>
 #include <unordered_set>
 
+#include "TernarySearchTree.h"
+
 using namespace std;
 
 
@@ -44,13 +46,14 @@ class Dictionary {
 private:
     DictionaryType type;
     unordered_set<string> dictionary;
+    TernarySearchTree* tree;
 
 #pragma mark - Public methods
 
 public:
 
     /**
-     * Dictionary class contructor.
+     * Dictionary class constructor.
      *
      * - dictionary : Path to the file which contains the dictionary.
      * - type       : Type of the data structure to use.
@@ -66,6 +69,7 @@ public:
 
             case DictionaryTST:
                 cout << "Using \"Ternary Search Trie\" implementation." << endl;
+                tree = new TernarySearchTree();
                 break;
         }
         cout << "Loading dictionary from " << dictionary << endl;
@@ -97,8 +101,8 @@ public:
                     this->dictionary.insert(word);
                     break;
 
-                //TODO: Implement.
                 case DictionaryTST:
+                    this->tree->insert(word);
                     break;
             }
         }
@@ -120,7 +124,7 @@ public:
                 return (this->dictionary.find(word) != this->dictionary.end());
 
             case DictionaryTST:
-                return false;
+                return this->tree->contains(word);
 
             default:
                 return false;
