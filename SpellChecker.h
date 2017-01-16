@@ -12,6 +12,10 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
+#include <fstream>
+#include <regex>
+#include <algorithm>
 
 #include "Dictionary.h"
 
@@ -44,23 +48,37 @@ public:
 
         //TODO: Implement.
 
+        ifstream textToCheck(filename);
 
 
+
+        string line;
+        while (getline(textToCheck, line)) {
+            smatch m;
+            regex e ("\\b[A-Za-z']+\\b");   // matches words beginning by "sub"
+
+            while (regex_search (line, m, e)) {
+                string mot = m.str(0);
+                transform(mot.begin(), mot.end(), mot.begin(), ::tolower);
+                if(!dictionary.contains(mot)){
+                    cout << endl << '*' << mot << endl;
+                    for(string str : possibilities1ForWord(mot))
+                        cout << "1. " << str << endl;
+                    for(string str : possibilities2ForWord(mot))
+                        cout << "2. " << str << endl;
+                    for(string str : possibilities3ForWord(mot))
+                        cout << "3. " << str << endl;
+                    for(string str : possibilities4ForWord(mot))
+                        cout << "4. " << str << endl;
+                }
+
+                line = m.suffix().str();
+            }
+        }
+
+      textToCheck.close();
     }
 
-    //TODO: enlever le construteur quand tests finis
-    /*
-    SpellChecker(const string& word, const Dictionary& dictionary)
-        : dictionary(dictionary) {
-        for(string str : possibilities1ForWord(word))
-            cout << "1. " << str << endl;
-        for(string str : possibilities2ForWord(word))
-            cout << "2. " << str << endl;
-        for(string str : possibilities3ForWord(word))
-            cout << "3. " << str << endl;
-        for(string str : possibilities4ForWord(word))
-            cout << "4. " << str << endl;
-    }*/
 
 #pragma mark - Private methods
 
@@ -80,7 +98,7 @@ private:
             // suppression of the letter
             cpy.erase(cpy.begin() + i);
             // check if the new word is in the dictionary
-              if(dictionary.contains(cpy))
+              if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
                   result.push_back(cpy);
         }
         return result;
@@ -102,12 +120,12 @@ private:
             for(char c = 'a'; c <= 'z'; ++c){
                 cpy.insert(cpy.begin()+i, c);
                 // check if the new word is in the dictionary
-                if(dictionary.contains(cpy))
+                if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
                   result.push_back(cpy);
                 cpy.erase(cpy.begin() + i);
             }
             cpy.insert(cpy.begin() + i, '\'');
-            if(dictionary.contains(cpy))
+            if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
                 result.push_back(cpy);
         }
         return result;
@@ -128,13 +146,13 @@ private:
             for(char c = 'a'; c <= 'z'; ++c){
                 cpy[i] = c;
                 // check if the new word is in the dictionary
-                if(dictionary.contains(cpy))
+                if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
                   result.push_back(cpy);
             }
             // add the char ' outside of the loop
             cpy[i] = '\'';
             // check if the new word is in the dictionary
-            if(dictionary.contains(cpy))
+            if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
                 result.push_back(cpy);
         }
         return result;
@@ -154,7 +172,7 @@ private:
             // swap of the two characters
             swap(cpy[i], cpy[i+1]);
             // check if the new word is in the dictionary
-            if(dictionary.contains(cpy))
+            if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
                 result.push_back(cpy);
         }
         return result;
