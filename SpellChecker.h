@@ -40,21 +40,29 @@ public:
     /**
      * SpellChecker class constructor.
      *
-     * - filename : Path to the file to spell check.
-     * - dict     : The dictionary to spell check the file with.
+     * - filename   : Path to the file to spell check.
+     * - dictionary : The dictionary to spell check the file with.
      */
     SpellChecker(const string& filename, const Dictionary& dictionary)
         : filename(filename), dictionary(dictionary) {
 
-        //TODO: Implement.
+        //TODO: Check if we can do better
+
+        // To know how much time it took to spell check the file
+        chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
 
         ifstream textToCheck(filename);
 
-
+        if(!textToCheck) {
+            cerr << "Error loading " << filename << ". Exiting." << endl;
+            exit(EXIT_FAILURE);
+        }
 
         string line;
         while (getline(textToCheck, line)) {
             smatch m;
+            // take all the words beginning with a alphabetic character and with
+            // only alphabetic or ' chara
             regex e ("\\b[A-Za-z']+\\b");   // matches words beginning by "sub"
 
             while (regex_search (line, m, e)) {
@@ -76,7 +84,11 @@ public:
             }
         }
 
-      textToCheck.close();
+        // We get the duration it took to check the spell and we display it.
+        chrono::time_point<chrono::system_clock> end = chrono::system_clock::now();
+        chrono::duration<double> duration = end - start;
+        cout << "\n\nFile spell checked in " << duration.count() << " seconds." << endl;
+        textToCheck.close();
     }
 
 
@@ -92,7 +104,7 @@ private:
      */
     vector<string> possibilities1ForWord(const string& word) {
         vector<string> result;
-        for (size_t i = 0; i < word.length(); ++i){
+        for (size_t i = 0; i < word.length(); ++i) {
             // we work on a copy of word
             string cpy = word;
             // suppression of the letter
@@ -113,11 +125,11 @@ private:
      */
     vector<string> possibilities2ForWord(const string& word) {
         vector<string> result;
-        for (size_t i = 0; i < word.length(); ++i){
+        for (size_t i = 0; i < word.length(); ++i) {
             // we work on a copy of word
             string cpy = word;
             // insertion of all possible letters
-            for(char c = 'a'; c <= 'z'; ++c){
+            for(char c = 'a'; c <= 'z'; ++c) {
                 cpy.insert(cpy.begin()+i, c);
                 // check if the new word is in the dictionary
                 if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
@@ -139,11 +151,11 @@ private:
      */
     vector<string> possibilities3ForWord(const string& word) {
         vector<string> result;
-        for (size_t i = 0; i < word.length(); ++i){
+        for (size_t i = 0; i < word.length(); ++i) {
             // we work on a copy of word
             string cpy = word;
             // insertion of all possible letters
-            for(char c = 'a'; c <= 'z'; ++c){
+            for(char c = 'a'; c <= 'z'; ++c) {
                 cpy[i] = c;
                 // check if the new word is in the dictionary
                 if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
@@ -166,7 +178,7 @@ private:
      */
     vector<string> possibilities4ForWord(const string& word) {
         vector<string> result;
-        for (size_t i = 0; i < word.length() - 1; ++i){
+        for (size_t i = 0; i < word.length() - 1; ++i) {
             // we work on a copy of word
             string cpy = word;
             // swap of the two characters
