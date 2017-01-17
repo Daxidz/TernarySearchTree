@@ -30,13 +30,11 @@ void displayHelp() {
     cout << endl;
     cout << "Options:" << endl;
 
-    cout << " -d=<path>\tSpecify the path of the dictionary file. Default: data/dictionary.txt" << endl;
+    cout << " -d <path>\tSpecify the path of the dictionary file. Default: data/dictionary.txt" << endl;
 
     cout << " -h\t\t" << "Display this help." << endl;
 
-    cout << " -t=<value>\tSpecify the data type to use. <value> must be one of the following:" << endl;
-    cout << "\t\t - set: Use an ordered set. (Default)" << endl;
-    cout << "\t\t - tst: Use a ternary search trie." << endl;
+    cout << " --tst\t\tTell the program to use a Ternary Search Tree as dictionary." << endl;
 }
 
 /**
@@ -44,7 +42,7 @@ void displayHelp() {
  */
 int main(int argc, char *argv[]) {
     string dictionaryPath(DEFAULT_DICT_FILE);
-    string filePath("data/input_wikipedia.txt");
+    string filePath("data/input_sh.txt");
     DictionaryType type(DEFAULT_DATA_TYPE);
 
     if(argc > 1) {
@@ -55,13 +53,11 @@ int main(int argc, char *argv[]) {
         }
 
         for(int i = 1; i < argc; ++i) {
-            if(!strncmp(argv[i], "-d=", 3)) {
-                dictionaryPath = argv[i] + 3;
+            if(!strncmp(argv[i], "-d", 2)) {
+                dictionaryPath = argv[++i];
             }
-            else if(!strncmp(argv[i], "-t=", 3)) {
-                if(!strcmp(argv[i] + 3, "tst")) {
-                    type = DictionaryTST;
-                }
+            else if(!strncmp(argv[i], "--tst", 5)) {
+                type = DictionaryTST;
             }
             else {
                 cout << "Unknown option: " << argv[i] << endl;
