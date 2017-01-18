@@ -17,7 +17,6 @@
 #include "SpellChecker.h"
 
 // Defaults values.
-#define DEFAULT_DATA_TYPE   DictionaryUnorderedSet
 #define DEFAULT_DICT_FILE   "data/dictionary.txt"
 
 using namespace std;
@@ -41,9 +40,10 @@ void displayHelp() {
  * Main program.
  */
 int main(int argc, char *argv[]) {
+    bool useTST = false;
+
     string dictionaryPath(DEFAULT_DICT_FILE);
     string filePath("data/input_sh.txt");
-    DictionaryType type(DEFAULT_DATA_TYPE);
 
     if(argc > 1) {
         if(!strcmp(argv[1], "-h")) {
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
                 dictionaryPath = argv[++i];
             }
             else if(!strncmp(argv[i], "--tst", 5)) {
-                type = DictionaryTST;
+                useTST = true;
             }
             else {
                 cout << "Unknown option: " << argv[i] << endl;
@@ -68,7 +68,12 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    Dictionary dictionary(dictionaryPath, type);
+    Dictionary* dictionary;
+
+    if(useTST)
+        dictionary = new DictionaryTST(dictionaryPath);
+    else
+        dictionary = new DictionarySet(dictionaryPath);
 
     SpellChecker checker(filePath, dictionary);
 

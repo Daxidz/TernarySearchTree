@@ -24,60 +24,19 @@ using namespace std;
 
 
 /**
- * Enumeration which defines the possible data structures that can be used with the
- * Dictionary class.
- *
- * - DictionaryUnorderedSet : std::unordered_set;
- * - DictionaryTST          : Own implementation of a Ternary Search Trie.
- */
-enum DictionaryType {
-    DictionaryUnorderedSet,
-    DictionaryTST
-};
-
-
-/**
  * Class which represents a dictionary.
  */
 class Dictionary {
 
-#pragma mark - Private fields
+protected:
 
-private:
-    DictionaryType type;
-    unordered_set<string> dictionary;
-    TernarySearchTree* tree;
-
-#pragma mark - Public methods
-
-public:
-
-    /**
-     * Dictionary class constructor.
-     *
-     * - dictionary : Path to the file which contains the dictionary.
-     * - type       : Type of the data structure to use.
-     */
-    Dictionary(const string& dictionary, DictionaryType type) {
-        this->type = type;
-
-        // Alerting the user on which implementation is used.
-        switch(this->type) {
-            case DictionaryUnorderedSet:
-                cout << "Using \"unordered_set\" implementation." << endl;
-                break;
-
-            case DictionaryTST:
-                cout << "Using \"Ternary Search Trie\" implementation." << endl;
-                tree = new TernarySearchTree();
-                break;
-        }
-        cout << "Loading dictionary from " << dictionary << endl;
+    void populate(const string& filename) {
+        cout << "Loading dictionary from " << filename << endl;
 
         // We open the dictionary file. If there is an error, we exit.
-        ifstream file(dictionary);
+        ifstream file(filename);
         if(!file) {
-            cerr << "Error loading " << dictionary << ". Exiting." << endl;
+            cerr << "Error loading " << filename << ". Exiting." << endl;
 
             exit(EXIT_FAILURE);
         }
@@ -96,15 +55,7 @@ public:
             transform(word.begin(), word.end(), word.begin(), ::tolower);
 
             // We add the word to the dictionary.
-            switch(this->type) {
-                case DictionaryUnorderedSet:
-                    this->dictionary.insert(word);
-                    break;
-
-                case DictionaryTST:
-                    this->tree->insert(word);
-                    break;
-            }
+            insert(word);
         }
 
         // We get the duration it took to fill the data-structure and we display it.
@@ -113,22 +64,69 @@ public:
         cout << "Dictionary loaded in " << duration.count() << " seconds." << endl;
     }
 
+public:
+
+    virtual bool contains(const string& key) = 0;
+    virtual void insert(const string& key) = 0;
+
+};
+
+
+class DictionarySet : public Dictionary {
+
+private:
+    unordered_set<string>* set;
+
+public:
+
+    DictionarySet(const string& filename) {
+        cout << "Using unordered_set implementation." << endl;
+
+        set = new unordered_set<string>();
+
+        populate(filename);
+    }
 
     /**
      * Returns 'true' if the word passed as argument is in the dictionary, 'false'
      * otherwise.
      */
-    bool contains(const string& word) const {
-        switch(this->type) {
-            case DictionaryUnorderedSet:
-                return (this->dictionary.find(word) != this->dictionary.end());
+    bool contains(const string& key) {
+        return (set->find(key) != set->end());
+    }
 
-            case DictionaryTST:
-                return this->tree->contains(word);
+    void insert(const string& key) {
+        set->insert(key);
+    }
 
-            default:
-                return false;
-        }
+};
+
+
+class DictionaryTST : public Dictionary {
+
+private:
+    TernarySearchTree *tree;
+
+public:
+
+    DictionaryTST(const string& filename) {
+        cout << "Using Ternary Search Tree implementation." << endl;
+
+        tree = new TernarySearchTree();
+
+        this->populate(filename);
+    }
+
+    /**
+     * Returns 'true' if the word passed as argument is in the dictionary, 'false'
+     * otherwise.
+     */
+    bool contains(const string& key) {
+        return tree->contains(key);
+    }
+
+    void insert(const string& key) {
+        tree->insert(key);
     }
 
 };

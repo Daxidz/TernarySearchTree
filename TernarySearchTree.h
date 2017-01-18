@@ -17,9 +17,14 @@
 
 using namespace std;
 
-class TernarySearchTree {
 
-#pragma mark - Node structure
+/**
+ * Class which represents a Ternary Search Tree.
+ *
+ * Genericity was not implemented for this class since Ternary Search Trees were
+ * invented for dictionary reason, hence it uses strings.
+ */
+class TernarySearchTree {
 
 private:
     struct Node {
@@ -37,13 +42,9 @@ private:
         }
     };
 
-#pragma mark - Private fields
-
 private:
     // Tree's root
     Node* root;
-
-#pragma mark - Public methods
 
 public:
 
@@ -59,6 +60,9 @@ public:
      * argument.
      */
     bool contains(const string& key) {
+        if(key.empty())
+            throw invalid_argument("Key is NULL.");
+
         Node* result = get(root, key.c_str());
 
         return (result) ? result->isEnd : false;
@@ -68,7 +72,11 @@ public:
      * Insert the string passed as argument in the ternary search tree.
      */
     void insert(const string& key) {
-        root = insert(root, key.c_str());
+        if(key.empty())
+            throw invalid_argument("Key is NULL.");
+
+        if(!contains(key))
+            root = insert(root, key.c_str());
     }
 
 #pragma mark - Private methods
