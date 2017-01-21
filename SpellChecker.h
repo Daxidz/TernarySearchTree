@@ -10,12 +10,12 @@
 #ifndef __SPELL_CHECKER__
 #define __SPELL_CHECKER__
 
+#include <algorithm>
+#include <fstream>
+#include <iostream>
+#include <regex>
 #include <string>
 #include <vector>
-#include <iostream>
-#include <fstream>
-#include <regex>
-#include <algorithm>
 
 #include "Dictionary.h"
 
@@ -23,17 +23,12 @@ using namespace std;
 
 
 /**
- * Class which is used to spell check given a text file and a dictionary.
+ * Class which is used to spell check given a text file and a dictionary->
  */
 class SpellChecker {
 
-#pragma mark - Private fields
-
 private:
-    const string& filename;
-    const Dictionary& dictionary;
-
-#pragma mark - Public methods
+    Dictionary* dictionary;
 
 public:
 
@@ -43,13 +38,7 @@ public:
      * - filename   : Path to the file to spell check.
      * - dictionary : The dictionary to spell check the file with.
      */
-    SpellChecker(const string& filename, const Dictionary& dictionary)
-        : filename(filename), dictionary(dictionary) {
-
-        //TODO: Check if we can do better
-
-        // To know how much time it took to spell check the file
-        chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
+    SpellChecker(const string& filename, Dictionary* dictionary) : dictionary(dictionary) {
 
         ifstream textToCheck(filename);
         ofstream output ("output.txt",ofstream::out);
@@ -60,19 +49,25 @@ public:
         }
 
         string line;
+
+        // To know how much time it took to spell check the file
+        chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
         while (getline(textToCheck, line)) {
             smatch m;
             // take all the words beginning with a alphabetic character and with
-            // only alphabetic or ' chara
-            regex e ("\\b[A-Za-z']+\\b");   // matches words beginning by "sub"
+
+            // only alphabetic or ' character.
+            regex e("\\b[A-Za-z']+\\b");    // matches words beginning by "sub"
             //regex e ("[A-Za-z]+([A-Za-z'][A-Za-z])*");
 
             while (regex_search (line, m, e)) {
                 string mot = m.str(0);
+
                 transform(mot.begin(), mot.end(), mot.begin(), ::tolower);
-                if(!dictionary.contains(mot)){
-                    //cout << endl << '*' << mot << endl;
-                    output << '*' << mot << endl;
+
+                if(!dictionary->contains(mot)){
+                    cout << endl << '*' << mot << endl;
+
                     for(string str : possibilities1ForWord(mot))
                         //cout << "1. " << str << endl;
                         output << "1. " << str << endl;
@@ -95,11 +90,10 @@ public:
         chrono::time_point<chrono::system_clock> end = chrono::system_clock::now();
         chrono::duration<double> duration = end - start;
         cout << "\n\nFile spell checked in " << duration.count() << " seconds." << endl;
+
         textToCheck.close();
     }
 
-
-#pragma mark - Private methods
 
 private:
 
@@ -111,15 +105,17 @@ private:
      */
     vector<string> possibilities1ForWord(const string& word) {
         vector<string> result;
-        for (size_t i = 0; i < word.length(); ++i) {
+
+        for(size_t i = 0; i < word.length(); ++i) {
             // we work on a copy of word
-            string cpy = word;
+            string cpy(word);
             // suppression of the letter
-            cpy.erase(cpy.begin() + i);
+            cpy.erase(cpy.begin() + (long)i);
             // check if the new word is in the dictionary
-              if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
+              if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                   result.push_back(cpy);
         }
+
         return result;
     }
 
@@ -132,21 +128,23 @@ private:
      */
     vector<string> possibilities2ForWord(const string& word) {
         vector<string> result;
+
         for (size_t i = 0; i < word.length(); ++i) {
             // we work on a copy of word
-            string cpy = word;
+            string cpy(word);
             // insertion of all possible letters
             for(char c = 'a'; c <= 'z'; ++c) {
-                cpy.insert(cpy.begin()+i, c);
+                cpy.insert(cpy.begin() + (long)i, c);
                 // check if the new word is in the dictionary
-                if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
+                if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                   result.push_back(cpy);
-                cpy.erase(cpy.begin() + i);
+                cpy.erase(cpy.begin() + (long)i);
             }
-            cpy.insert(cpy.begin() + i, '\'');
-            if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
+            cpy.insert(cpy.begin() + (long)i, '\'');
+            if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                 result.push_back(cpy);
         }
+
         return result;
     }
 
@@ -158,22 +156,24 @@ private:
      */
     vector<string> possibilities3ForWord(const string& word) {
         vector<string> result;
+
         for (size_t i = 0; i < word.length(); ++i) {
             // we work on a copy of word
-            string cpy = word;
+            string cpy(word);
             // insertion of all possible letters
             for(char c = 'a'; c <= 'z'; ++c) {
                 cpy[i] = c;
                 // check if the new word is in the dictionary
-                if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
+                if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                   result.push_back(cpy);
             }
             // add the char ' outside of the loop
             cpy[i] = '\'';
             // check if the new word is in the dictionary
-            if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
+            if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                 result.push_back(cpy);
         }
+
         return result;
     }
 
@@ -185,15 +185,17 @@ private:
      */
     vector<string> possibilities4ForWord(const string& word) {
         vector<string> result;
+
         for (size_t i = 0; i < word.length() - 1; ++i) {
             // we work on a copy of word
-            string cpy = word;
+            string cpy(word);
             // swap of the two characters
-            swap(cpy[i], cpy[i+1]);
+            swap(cpy[i], cpy[i + 1]);
             // check if the new word is in the dictionary
-            if(dictionary.contains(cpy) && !(find(result.begin(), result.end(), cpy) != result.end()))
+            if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                 result.push_back(cpy);
         }
+
         return result;
     }
 };
