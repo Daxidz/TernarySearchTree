@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     bool useTST = false;
 
     string dictionaryPath(DEFAULT_DICT_FILE);
-    string filePath("data/input_sh.txt");
+    string filePath("data/input_lates.txt");
 
     if(argc > 1) {
         if(!strcmp(argv[1], "-h")) {
@@ -58,6 +58,10 @@ int main(int argc, char *argv[]) {
             }
             else if(!strncmp(argv[i], "--tst", 5)) {
                 useTST = true;
+            }
+            else if(!strncmp(argv[i], "-f", 3)) {
+                filePath = "data/";
+                filePath += argv[++i];
             }
             else {
                 cout << "Unknown option: " << argv[i] << endl;

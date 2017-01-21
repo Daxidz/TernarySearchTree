@@ -41,12 +41,16 @@ public:
     SpellChecker(const string& filename, Dictionary* dictionary) : dictionary(dictionary) {
 
         ifstream textToCheck(filename);
-        ofstream output ("output.txt",ofstream::out);
+        ofstream output ("output.txt", ofstream::out);
 
         if(!textToCheck) {
             cerr << "Error loading " << filename << ". Exiting." << endl;
+            output.close();
+            textToCheck.close();
             exit(EXIT_FAILURE);
         }
+
+        cout << "Using file: " << filename << endl;
 
         string line;
 
@@ -56,9 +60,10 @@ public:
             smatch m;
             // take all the words beginning with a alphabetic character and with
 
+            //TODO: Choisir le regex!
             // only alphabetic or ' character.
-            regex e("\\b[A-Za-z']+\\b");    // matches words beginning by "sub"
-            //regex e ("[A-Za-z]+([A-Za-z'][A-Za-z])*");
+            //regex e("\\b[A-Za-z']+\\b");
+            regex e ("[A-Za-z]+([A-Za-z'][A-Za-z])*");
 
             while (regex_search (line, m, e)) {
                 string mot = m.str(0);
@@ -66,7 +71,7 @@ public:
                 transform(mot.begin(), mot.end(), mot.begin(), ::tolower);
 
                 if(!dictionary->contains(mot)){
-                    cout << endl << '*' << mot << endl;
+                    //cout << endl << '*' << mot << endl;
 
                     for(string str : possibilities1ForWord(mot))
                         //cout << "1. " << str << endl;
@@ -89,8 +94,9 @@ public:
         // We get the duration it took to check the spell and we display it.
         chrono::time_point<chrono::system_clock> end = chrono::system_clock::now();
         chrono::duration<double> duration = end - start;
-        cout << "\n\nFile spell checked in " << duration.count() << " seconds." << endl;
+        cout << "File spell checked in " << duration.count() << " seconds." << endl;
 
+        output.close();
         textToCheck.close();
     }
 
