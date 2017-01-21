@@ -44,7 +44,7 @@ void displayHelp() {
  */
 int main(int argc, char *argv[]) {
     string dictionaryPath(DEFAULT_DICT_FILE);
-    string filePath("data/input_wikipedia.txt");
+    string filePath("data/input_sh.txt");
     DictionaryType type(DEFAULT_DATA_TYPE);
 
     if(argc > 1) {

@@ -14,5 +14,5 @@ spell_checker: $(CPP_FILES)
 
 clean:
 	@$(PRINTF) "Cleaning workspace... "
-	@$(RM) $(RM_FLAGS) spell_checker
+	@$(RM) $(RM_FLAGS) spell_checker*
 	@$(PRINTF) "Cleaned!\n"
