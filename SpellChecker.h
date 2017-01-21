@@ -52,6 +52,7 @@ public:
         chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
 
         ifstream textToCheck(filename);
+        ofstream output ("output.txt",ofstream::out);
 
         if(!textToCheck) {
             cerr << "Error loading " << filename << ". Exiting." << endl;
@@ -64,20 +65,26 @@ public:
             // take all the words beginning with a alphabetic character and with
             // only alphabetic or ' chara
             regex e ("\\b[A-Za-z']+\\b");   // matches words beginning by "sub"
+            //regex e ("[A-Za-z]+([A-Za-z'][A-Za-z])*");
 
             while (regex_search (line, m, e)) {
                 string mot = m.str(0);
                 transform(mot.begin(), mot.end(), mot.begin(), ::tolower);
                 if(!dictionary.contains(mot)){
-                    cout << endl << '*' << mot << endl;
+                    //cout << endl << '*' << mot << endl;
+                    output << '*' << mot << endl;
                     for(string str : possibilities1ForWord(mot))
-                        cout << "1. " << str << endl;
+                        //cout << "1. " << str << endl;
+                        output << "1. " << str << endl;
                     for(string str : possibilities2ForWord(mot))
-                        cout << "2. " << str << endl;
+                        //cout << "2. " << str << endl;
+                        output << "2. " << str << endl;
                     for(string str : possibilities3ForWord(mot))
-                        cout << "3. " << str << endl;
+                        //cout << "3. " << str << endl;
+                        output << "3. " << str << endl;
                     for(string str : possibilities4ForWord(mot))
-                        cout << "4. " << str << endl;
+                        //cout << "4. " << str << endl;
+                        output << "4. " << str << endl;
                 }
 
                 line = m.suffix().str();
