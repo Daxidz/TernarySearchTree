@@ -17,7 +17,8 @@
 #include "SpellChecker.h"
 
 // Defaults values.
-#define DEFAULT_DICT_FILE   "data/dictionary.txt"
+#define DEFAULT_DICT_FILE   "dictionary.txt"
+#define DEFAULT_SPELL_FILE  "input_lates.txt"
 
 using namespace std;
 
@@ -29,9 +30,13 @@ void displayHelp() {
     cout << endl;
     cout << "Options:" << endl;
 
-    cout << " -d <path>\tSpecify the path of the dictionary file. Default: data/dictionary.txt" << endl;
+    cout << " -d <path>\tSpecify the path of the dictionary file. Default: " << DEFAULT_DICT_FILE << endl;
+    cout << "\t\t\tBeware: File must be in data/ directory." << endl;
 
     cout << " -h\t\t" << "Display this help." << endl;
+
+    cout << " -f\t\t" << "Specify the file to spell check. Default: " << DEFAULT_DICT_FILE << endl;
+    cout << "\t\t\tBeware: File must be in data/ directory." << endl;
 
     cout << " --tst\t\tTell the program to use a Ternary Search Tree as dictionary." << endl;
 }
@@ -43,7 +48,7 @@ int main(int argc, char *argv[]) {
     bool useTST = false;
 
     string dictionaryPath(DEFAULT_DICT_FILE);
-    string filePath("data/input_lates.txt");
+    string filePath(DEFAULT_SPELL_FILE);
 
     if(argc > 1) {
         if(!strcmp(argv[1], "-h")) {
@@ -59,9 +64,8 @@ int main(int argc, char *argv[]) {
             else if(!strncmp(argv[i], "--tst", 5)) {
                 useTST = true;
             }
-            else if(!strncmp(argv[i], "-f", 3)) {
-                filePath = "data/";
-                filePath += argv[++i];
+            else if(!strncmp(argv[i], "-f", 2)) {
+                filePath = argv[++i];
             }
             else {
                 cout << "Unknown option: " << argv[i] << endl;

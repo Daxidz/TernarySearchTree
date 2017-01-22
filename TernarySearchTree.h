@@ -3,7 +3,7 @@
  * Authors       : Lucas ELISEI, Dany TCHENTE & David TRUAN
  *
  * Created on    : 16.01.2017
- * Inspired from : BinarySearchTree.h
+ * Inspired from : http://algs4.cs.princeton.edu/52trie/TST.java.html
  *
  * Contains the TernarySearchTree class.
  */

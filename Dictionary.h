@@ -20,6 +20,8 @@
 
 #include "TernarySearchTree.h"
 
+#define DEFAULT_DATA_DIR    "data/"
+
 using namespace std;
 
 
@@ -34,7 +36,7 @@ protected:
         cout << "Loading dictionary from " << filename << endl;
 
         // We open the dictionary file. If there is an error, we exit.
-        ifstream file(filename);
+        ifstream file(DEFAULT_DATA_DIR + filename);
         if(!file) {
             cerr << "Error loading " << filename << ". Exiting." << endl;
 
@@ -68,6 +70,7 @@ public:
 
     virtual bool contains(const string& key) = 0;
     virtual void insert(const string& key) = 0;
+    virtual string type() = 0;
 
 };
 
@@ -99,6 +102,10 @@ public:
         set->insert(key);
     }
 
+    string type() {
+        return "set";
+    }
+
 };
 
 
@@ -127,6 +134,10 @@ public:
 
     void insert(const string& key) {
         tree->insert(key);
+    }
+
+    string type() {
+        return "tst";
     }
 
 };

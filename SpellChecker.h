@@ -19,6 +19,8 @@
 
 #include "Dictionary.h"
 
+#define DEFAULT_DATA_DIR "data/"
+
 using namespace std;
 
 
@@ -39,9 +41,10 @@ public:
      * - dictionary : The dictionary to spell check the file with.
      */
     SpellChecker(const string& filename, Dictionary* dictionary) : dictionary(dictionary) {
+        string outputFilename("output_" + dictionary->type() + "_" + filename);
 
-        ifstream textToCheck(filename);
-        ofstream output ("output.txt", ofstream::out);
+        ifstream textToCheck(DEFAULT_DATA_DIR + filename);
+        ofstream output(outputFilename, ofstream::out);
 
         if(!textToCheck) {
             cerr << "Error loading " << filename << ". Exiting." << endl;
@@ -50,7 +53,7 @@ public:
             exit(EXIT_FAILURE);
         }
 
-        cout << "Using file: " << filename << endl;
+        cout << "Spell checking file: " << filename << endl;
 
         string line;
 
@@ -58,33 +61,30 @@ public:
         chrono::time_point<chrono::system_clock> start = chrono::system_clock::now();
         while (getline(textToCheck, line)) {
             smatch m;
-            // take all the words beginning with a alphabetic character and with
 
-            //TODO: Choisir le regex!
-            // only alphabetic or ' character.
-            //regex e("\\b[A-Za-z']+\\b");
-            regex e ("[A-Za-z]+([A-Za-z'][A-Za-z])*");
+            // We apply a regex to take all the words beginning with an alphabetic
+            // character and we only keep alphabetic and ' characters.
+            regex e("[A-Za-z]+([A-Za-z'][A-Za-z])*");
 
             while (regex_search (line, m, e)) {
-                string mot = m.str(0);
+                string word = m.str(0);
 
-                transform(mot.begin(), mot.end(), mot.begin(), ::tolower);
+                transform(word.begin(), word.end(), word.begin(), ::tolower);
 
-                if(!dictionary->contains(mot)){
-                    //cout << endl << '*' << mot << endl;
+                if(!dictionary->contains(word)) {
+                    output << "*" << word << endl;
 
-                    for(string str : possibilities1ForWord(mot))
-                        //cout << "1. " << str << endl;
-                        output << "1. " << str << endl;
-                    for(string str : possibilities2ForWord(mot))
-                        //cout << "2. " << str << endl;
-                        output << "2. " << str << endl;
-                    for(string str : possibilities3ForWord(mot))
-                        //cout << "3. " << str << endl;
-                        output << "3. " << str << endl;
-                    for(string str : possibilities4ForWord(mot))
-                        //cout << "4. " << str << endl;
-                        output << "4. " << str << endl;
+                    for(string str : possibilities1ForWord(word))
+                        output << "1:" << str << endl;
+
+                    for(string str : possibilities2ForWord(word))
+                        output << "2:" << str << endl;
+
+                    for(string str : possibilities3ForWord(word))
+                        output << "3:" << str << endl;
+
+                    for(string str : possibilities4ForWord(word))
+                        output << "4:" << str << endl;
                 }
 
                 line = m.suffix().str();
@@ -98,6 +98,8 @@ public:
 
         output.close();
         textToCheck.close();
+
+        cout << "Output: " << outputFilename << endl;
     }
 
 
@@ -113,11 +115,13 @@ private:
         vector<string> result;
 
         for(size_t i = 0; i < word.length(); ++i) {
-            // we work on a copy of word
+            // We work on a copy of the word
             string cpy(word);
-            // suppression of the letter
+
+            // Suppression of the letter
             cpy.erase(cpy.begin() + (long)i);
-            // check if the new word is in the dictionary
+
+            // Check if the new word is in the dictionary
               if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                   result.push_back(cpy);
         }
@@ -136,16 +140,20 @@ private:
         vector<string> result;
 
         for (size_t i = 0; i < word.length(); ++i) {
-            // we work on a copy of word
+            // We work on a copy of word
             string cpy(word);
-            // insertion of all possible letters
+
+            // Insertion of all possible letters
             for(char c = 'a'; c <= 'z'; ++c) {
                 cpy.insert(cpy.begin() + (long)i, c);
-                // check if the new word is in the dictionary
+
+                // Check if the new word is in the dictionary
                 if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                   result.push_back(cpy);
+
                 cpy.erase(cpy.begin() + (long)i);
             }
+
             cpy.insert(cpy.begin() + (long)i, '\'');
             if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                 result.push_back(cpy);
@@ -164,18 +172,20 @@ private:
         vector<string> result;
 
         for (size_t i = 0; i < word.length(); ++i) {
-            // we work on a copy of word
+            // We work on a copy of the word
             string cpy(word);
-            // insertion of all possible letters
+
+            // Insertion of all possible letters
             for(char c = 'a'; c <= 'z'; ++c) {
                 cpy[i] = c;
-                // check if the new word is in the dictionary
+                // Check if the new word is in the dictionary
                 if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                   result.push_back(cpy);
             }
-            // add the char ' outside of the loop
+
+            // Add the char ' outside of the loop
             cpy[i] = '\'';
-            // check if the new word is in the dictionary
+            // Check if the new word is in the dictionary
             if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                 result.push_back(cpy);
         }
@@ -193,11 +203,13 @@ private:
         vector<string> result;
 
         for (size_t i = 0; i < word.length() - 1; ++i) {
-            // we work on a copy of word
+            // Ee work on a copy of word
             string cpy(word);
-            // swap of the two characters
+
+            // Swap of the two characters
             swap(cpy[i], cpy[i + 1]);
-            // check if the new word is in the dictionary
+
+            // Check if the new word is in the dictionary
             if(dictionary->contains(cpy) && (find(result.begin(), result.end(), cpy) == result.end()))
                 result.push_back(cpy);
         }
