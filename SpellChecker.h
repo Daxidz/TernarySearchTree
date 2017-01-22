@@ -63,7 +63,8 @@ public:
             smatch m;
 
             // We apply a regex to take all the words beginning with an alphabetic
-            // character and we only keep alphabetic and ' characters.
+            // character and we only keep alphabetic and ' characters ( ' char
+            // is only allowed IN the word i.e.: "Dave's.", 'hello would not be taken).
             regex e("[A-Za-z]+([A-Za-z'][A-Za-z])*");
 
             while (regex_search (line, m, e)) {

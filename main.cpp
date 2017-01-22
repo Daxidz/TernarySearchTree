@@ -35,7 +35,7 @@ void displayHelp() {
 
     cout << " -h\t\t" << "Display this help." << endl;
 
-    cout << " -f\t\t" << "Specify the file to spell check. Default: " << DEFAULT_DICT_FILE << endl;
+    cout << " -f\t\t" << "Specify the file to spell check. Default: " << DEFAULT_SPELL_FILE << endl;
     cout << "\t\t\tBeware: File must be in data/ directory." << endl;
 
     cout << " --tst\t\tTell the program to use a Ternary Search Tree as dictionary." << endl;
